@@ -1,0 +1,1957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vibe Coding the Human</title>
+  <style>
+    /* ========== RESET & BASE ========== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-dark: #0a0a0f;
+      --bg-card: #12121a;
+      --bg-card-hover: #1a1a2e;
+      --accent: #7c3aed;
+      --accent-light: #a78bfa;
+      --accent-glow: rgba(124, 58, 237, 0.3);
+      --green: #10b981;
+      --green-glow: rgba(16, 185, 129, 0.3);
+      --red: #ef4444;
+      --orange: #f59e0b;
+      --text: #e2e8f0;
+      --text-dim: #94a3b8;
+      --text-bright: #f8fafc;
+      --font-mono: 'Courier New', 'Consolas', monospace;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-dark);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ========== NAVIGATION ========== */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(10, 10, 15, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(124, 58, 237, 0.2);
+      padding: 0 2rem;
+      transition: transform 0.3s;
+    }
+
+    nav .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+    }
+
+    nav .logo {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      color: var(--accent-light);
+      font-weight: 700;
+    }
+
+    nav .nav-links {
+      display: flex;
+      gap: 0.5rem;
+      list-style: none;
+    }
+
+    nav .nav-links a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 0.85rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    nav .nav-links a:hover,
+    nav .nav-links a.active {
+      color: var(--text-bright);
+      background: rgba(124, 58, 237, 0.15);
+    }
+
+    /* ========== SECTIONS ========== */
+    section {
+      min-height: 100vh;
+      padding: 100px 2rem 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .section-inner {
+      max-width: 900px;
+      width: 100%;
+    }
+
+    .section-tag {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent-light);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      color: var(--text-bright);
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
+    }
+
+    .section-desc {
+      font-size: 1.1rem;
+      color: var(--text-dim);
+      max-width: 650px;
+      margin-bottom: 2.5rem;
+    }
+
+    /* ========== HERO ========== */
+    #hero {
+      text-align: center;
+      align-items: center;
+    }
+
+    #hero .section-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .hero-title {
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 900;
+      background: linear-gradient(135deg, #a78bfa, #7c3aed, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1.5rem;
+      line-height: 1.15;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1rem, 2vw, 1.3rem);
+      color: var(--text-dim);
+      max-width: 600px;
+      margin-bottom: 3rem;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.9rem 2rem;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+    }
+
+    .hero-cta:hover {
+      background: #6d28d9;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px var(--accent-glow);
+    }
+
+    /* Floating particles background */
+    .particles {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: var(--accent-light);
+      border-radius: 50%;
+      opacity: 0;
+      animation: float-up linear infinite;
+    }
+
+    @keyframes float-up {
+      0% { opacity: 0; transform: translateY(100vh) scale(0); }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.6; }
+      100% { opacity: 0; transform: translateY(-10vh) scale(1); }
+    }
+
+    /* ========== BEFORE AI SECTION ========== */
+    .code-editor {
+      background: #1e1e2e;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      margin-bottom: 2rem;
+    }
+
+    .editor-header {
+      background: #181825;
+      padding: 0.7rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .editor-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .editor-dot.red { background: #f38ba8; }
+    .editor-dot.yellow { background: #f9e2af; }
+    .editor-dot.green { background: #a6e3a1; }
+
+    .editor-title {
+      margin-left: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+
+    .editor-body {
+      padding: 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+
+    .editor-body .line-num {
+      color: #585b70;
+      user-select: none;
+      display: inline-block;
+      width: 2.5rem;
+      text-align: right;
+      margin-right: 1rem;
+    }
+
+    .code-keyword { color: #cba6f7; }
+    .code-func { color: #89b4fa; }
+    .code-string { color: #a6e3a1; }
+    .code-comment { color: #585b70; font-style: italic; }
+    .code-error { color: #f38ba8; }
+    .code-var { color: #f9e2af; }
+    .code-num { color: #fab387; }
+
+    .error-box {
+      background: rgba(243, 139, 168, 0.1);
+      border: 1px solid rgba(243, 139, 168, 0.3);
+      border-radius: 8px;
+      padding: 1rem 1.2rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: #f38ba8;
+      margin-top: 1rem;
+    }
+
+    .frustration-meter {
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .frustration-meter .label {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      margin-bottom: 0.5rem;
+    }
+
+    .meter-bar {
+      height: 8px;
+      background: #1e1e2e;
+      border-radius: 4px;
+      overflow: hidden;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .meter-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #f9e2af, #f38ba8, #ef4444);
+      border-radius: 4px;
+      width: 0%;
+      transition: width 1.5s ease;
+    }
+
+    /* ========== VIBE CODING SECTION ========== */
+    .vibe-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .prompt-input-box {
+      background: #1e1e2e;
+      border: 2px solid rgba(124, 58, 237, 0.3);
+      border-radius: 12px;
+      padding: 1.2rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    .prompt-input-box:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    .prompt-input-box .prompt-icon {
+      font-size: 1.3rem;
+      color: var(--accent-light);
+      flex-shrink: 0;
+    }
+
+    .prompt-input-box input {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--text-bright);
+      font-size: 1rem;
+      font-family: var(--font-sans);
+    }
+
+    .prompt-input-box input::placeholder {
+      color: var(--text-dim);
+    }
+
+    .prompt-input-box button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.5rem 1.2rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .prompt-input-box button:hover {
+      background: #6d28d9;
+    }
+
+    .prompt-suggestions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .prompt-suggestions button {
+      background: rgba(124, 58, 237, 0.1);
+      border: 1px solid rgba(124, 58, 237, 0.25);
+      color: var(--accent-light);
+      padding: 0.4rem 0.9rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .prompt-suggestions button:hover {
+      background: rgba(124, 58, 237, 0.2);
+      border-color: var(--accent);
+    }
+
+    .vibe-output {
+      background: #1e1e2e;
+      border-radius: 12px;
+      overflow: hidden;
+      min-height: 300px;
+      position: relative;
+    }
+
+    .vibe-output .output-header {
+      background: #181825;
+      padding: 0.7rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .vibe-output .output-header .left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .vibe-output .output-tabs {
+      display: flex;
+      gap: 0.3rem;
+    }
+
+    .vibe-output .output-tabs button {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: var(--font-mono);
+    }
+
+    .vibe-output .output-tabs button.active {
+      color: var(--text-bright);
+      background: rgba(124, 58, 237, 0.2);
+    }
+
+    .output-content {
+      padding: 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      line-height: 1.8;
+      min-height: 250px;
+    }
+
+    .output-content .cursor-blink {
+      display: inline-block;
+      width: 8px;
+      height: 16px;
+      background: var(--accent-light);
+      animation: blink 1s step-end infinite;
+      vertical-align: text-bottom;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    .output-preview {
+      padding: 1.5rem;
+      min-height: 250px;
+      display: none;
+    }
+
+    /* Preview styles for generated "apps" */
+    .preview-weather {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+      color: white;
+      max-width: 300px;
+      margin: 0 auto;
+    }
+
+    .preview-weather .temp { font-size: 3rem; font-weight: 800; }
+    .preview-weather .city { font-size: 1.2rem; opacity: 0.9; margin-top: 0.5rem; }
+    .preview-weather .icon { font-size: 3rem; margin: 1rem 0; }
+
+    .preview-quiz {
+      background: #1a1a2e;
+      border: 1px solid rgba(124, 58, 237, 0.3);
+      border-radius: 16px;
+      padding: 2rem;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .preview-quiz h3 { color: var(--accent-light); margin-bottom: 1rem; }
+    .preview-quiz .quiz-opt {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: rgba(124, 58, 237, 0.08);
+      border: 1px solid rgba(124, 58, 237, 0.2);
+      color: var(--text);
+      padding: 0.7rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      cursor: default;
+      font-size: 0.9rem;
+    }
+
+    .preview-game {
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .preview-game .game-grid {
+      display: inline-grid;
+      grid-template-columns: repeat(5, 40px);
+      gap: 3px;
+      margin: 1rem auto;
+    }
+
+    .preview-game .game-cell {
+      width: 40px;
+      height: 40px;
+      background: #2a2a3e;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .preview-game .game-cell.player { background: var(--accent); }
+    .preview-game .game-cell.wall { background: #3a3a4e; }
+    .preview-game .game-cell.exit { background: var(--green); }
+
+    /* ========== PROMPT QUEST GAME ========== */
+    .game-container {
+      max-width: 700px;
+      width: 100%;
+    }
+
+    .game-progress {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      justify-content: center;
+    }
+
+    .game-progress .step {
+      width: 40px;
+      height: 4px;
+      border-radius: 2px;
+      background: #2a2a3e;
+      transition: background 0.3s;
+    }
+
+    .game-progress .step.done { background: var(--green); }
+    .game-progress .step.current { background: var(--accent); }
+
+    .game-scenario {
+      background: var(--bg-card);
+      border: 1px solid rgba(124, 58, 237, 0.15);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .game-scenario .bug-label {
+      display: inline-block;
+      background: rgba(243, 139, 168, 0.15);
+      color: #f38ba8;
+      padding: 0.3rem 0.8rem;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .game-scenario .bug-desc {
+      font-size: 1.1rem;
+      color: var(--text-bright);
+      margin-bottom: 0.5rem;
+    }
+
+    .game-scenario .bug-context {
+      font-size: 0.9rem;
+      color: var(--text-dim);
+    }
+
+    .game-code-preview {
+      background: #1e1e2e;
+      border-radius: 8px;
+      padding: 1rem 1.2rem;
+      margin: 1rem 0;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      line-height: 1.7;
+      overflow-x: auto;
+    }
+
+    .game-choices {
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+
+    .game-choice {
+      background: var(--bg-card);
+      border: 2px solid rgba(124, 58, 237, 0.15);
+      border-radius: 12px;
+      padding: 1rem 1.2rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: left;
+      color: var(--text);
+      font-size: 0.95rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+    }
+
+    .game-choice:hover {
+      border-color: var(--accent);
+      background: var(--bg-card-hover);
+      transform: translateX(4px);
+    }
+
+    .game-choice .choice-letter {
+      background: rgba(124, 58, 237, 0.15);
+      color: var(--accent-light);
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .game-choice .choice-text {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      padding-top: 3px;
+    }
+
+    .game-choice.correct {
+      border-color: var(--green) !important;
+      background: rgba(16, 185, 129, 0.08) !important;
+    }
+
+    .game-choice.correct .choice-letter {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--green);
+    }
+
+    .game-choice.wrong {
+      border-color: var(--red) !important;
+      background: rgba(239, 68, 68, 0.08) !important;
+    }
+
+    .game-choice.wrong .choice-letter {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--red);
+    }
+
+    .game-choice.disabled {
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    .game-feedback {
+      margin-top: 1.5rem;
+      padding: 1.2rem 1.5rem;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      display: none;
+    }
+
+    .game-feedback.show { display: block; }
+
+    .game-feedback.correct-fb {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--green);
+    }
+
+    .game-feedback.wrong-fb {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+    }
+
+    .game-feedback .fb-title {
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+
+    .game-next-btn {
+      margin-top: 1.5rem;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.7rem 1.8rem;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: none;
+    }
+
+    .game-next-btn.show { display: inline-block; }
+
+    .game-next-btn:hover {
+      background: #6d28d9;
+      transform: translateY(-1px);
+    }
+
+    .game-complete {
+      text-align: center;
+      display: none;
+    }
+
+    .game-complete.show { display: block; }
+
+    .game-complete .score-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.1);
+      border: 3px solid var(--green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--green);
+    }
+
+    .game-complete h3 {
+      font-size: 1.5rem;
+      color: var(--text-bright);
+      margin-bottom: 0.8rem;
+    }
+
+    .game-complete p {
+      color: var(--text-dim);
+      max-width: 500px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .game-restart-btn {
+      background: rgba(124, 58, 237, 0.15);
+      color: var(--accent-light);
+      border: 1px solid rgba(124, 58, 237, 0.3);
+      padding: 0.6rem 1.5rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .game-restart-btn:hover {
+      background: rgba(124, 58, 237, 0.25);
+    }
+
+    /* ========== QUIZ SECTION ========== */
+    .quiz-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .quiz-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(124, 58, 237, 0.12);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: all 0.3s;
+    }
+
+    .quiz-card .quiz-q {
+      font-size: 1.15rem;
+      color: var(--text-bright);
+      margin-bottom: 1.2rem;
+      font-weight: 600;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .quiz-option {
+      background: rgba(124, 58, 237, 0.05);
+      border: 1px solid rgba(124, 58, 237, 0.15);
+      border-radius: 10px;
+      padding: 0.8rem 1.2rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+
+    .quiz-option:hover {
+      border-color: var(--accent);
+      background: rgba(124, 58, 237, 0.1);
+    }
+
+    .quiz-option.selected {
+      border-color: var(--accent);
+      background: rgba(124, 58, 237, 0.15);
+      color: var(--text-bright);
+    }
+
+    .quiz-result {
+      margin-top: 1rem;
+      padding: 1rem 1.2rem;
+      border-radius: 10px;
+      background: rgba(124, 58, 237, 0.08);
+      border: 1px solid rgba(124, 58, 237, 0.2);
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      display: none;
+      line-height: 1.6;
+    }
+
+    .quiz-result.show { display: block; }
+
+    .quiz-stats {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .quiz-stat {
+      background: rgba(124, 58, 237, 0.1);
+      padding: 0.3rem 0.7rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      color: var(--accent-light);
+      font-family: var(--font-mono);
+    }
+
+    /* ========== REFLECTION ========== */
+    .reflection-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .reflection-block {
+      background: var(--bg-card);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 12px 12px 0;
+      padding: 1.5rem 2rem;
+    }
+
+    .reflection-block h3 {
+      color: var(--accent-light);
+      font-size: 1.1rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .reflection-block p {
+      color: var(--text-dim);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    .spectrum {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background: var(--bg-card);
+      border-radius: 12px;
+    }
+
+    .spectrum-label {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      white-space: nowrap;
+      width: 100px;
+      text-align: center;
+    }
+
+    .spectrum-bar {
+      flex: 1;
+      height: 6px;
+      background: linear-gradient(90deg, var(--red), var(--orange), var(--green));
+      border-radius: 3px;
+      position: relative;
+    }
+
+    .spectrum-thumb {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 18px;
+      height: 18px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      cursor: grab;
+      transition: left 0.1s;
+    }
+
+    .spectrum-thumb:active { cursor: grabbing; }
+
+    .spectrum-verdict {
+      text-align: center;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      min-height: 1.5em;
+    }
+
+    /* ========== FOOTER ========== */
+    footer {
+      text-align: center;
+      padding: 3rem 2rem;
+      border-top: 1px solid rgba(124, 58, 237, 0.1);
+      color: var(--text-dim);
+      font-size: 0.85rem;
+    }
+
+    footer a {
+      color: var(--accent-light);
+      text-decoration: none;
+    }
+
+    /* ========== ANIMATIONS ========== */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Typing effect for vibe coder output */
+    .typing-line {
+      opacity: 0;
+      animation: type-in 0.3s forwards;
+    }
+
+    @keyframes type-in {
+      to { opacity: 1; }
+    }
+
+    /* ========== SCROLL INDICATOR ========== */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      animation: bounce-down 2s infinite;
+    }
+
+    .scroll-indicator .arrow {
+      width: 20px;
+      height: 20px;
+      border-right: 2px solid var(--text-dim);
+      border-bottom: 2px solid var(--text-dim);
+      transform: rotate(45deg);
+    }
+
+    @keyframes bounce-down {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 768px) {
+      section { padding: 80px 1.2rem 40px; }
+      nav .nav-links { display: none; }
+      .game-scenario { padding: 1.2rem; }
+      .spectrum { flex-direction: column; }
+      .spectrum-label { width: auto; }
+    }
+
+    /* ========== TRANSITION DIVIDERS ========== */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
+    }
+
+    /* Stats counter */
+    .stats-row {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-num {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent-light);
+      font-family: var(--font-mono);
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      margin-top: 0.2rem;
+    }
+
+    /* Timeline for evolution */
+    .timeline {
+      position: relative;
+      padding-left: 2rem;
+      margin: 2rem 0;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--text-dim), var(--accent), var(--green));
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-bottom: 2rem;
+      padding-left: 1.5rem;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -2rem;
+      top: 0.4rem;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--bg-dark);
+      transform: translateX(calc(50% - 1px));
+    }
+
+    .timeline-item .era {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent-light);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 0.3rem;
+    }
+
+    .timeline-item h4 {
+      color: var(--text-bright);
+      font-size: 1rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .timeline-item p {
+      color: var(--text-dim);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ========== NAVIGATION ========== -->
+<nav>
+  <div class="nav-inner">
+    <div class="logo">&gt;_ vibe_coding</div>
+    <ul class="nav-links">
+      <li><a href="#hero" class="active">Home</a></li>
+      <li><a href="#evolution">Evolution</a></li>
+      <li><a href="#before-ai">Before AI</a></li>
+      <li><a href="#vibe-coding">Vibe Coding</a></li>
+      <li><a href="#game">Prompt Quest</a></li>
+      <li><a href="#quiz">Who Creates?</a></li>
+      <li><a href="#reflection">Reflection</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<section id="hero">
+  <div class="particles" id="particles"></div>
+  <div class="section-inner">
+    <div class="section-tag">An Interactive Exploration</div>
+    <h1 class="hero-title">Vibe Coding the Human</h1>
+    <p class="hero-subtitle">
+      An interactive website about how AI is transforming programming, creativity, and what it means to be a creator in the age of large language models.
+    </p>
+    <a href="#evolution" class="hero-cta">
+      Start Exploring &darr;
+    </a>
+    <div class="stats-row">
+      <div class="stat-item">
+        <div class="stat-num" data-target="92">0</div>
+        <div class="stat-label">% of devs using AI tools</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" data-target="55">0</div>
+        <div class="stat-label">% faster with AI coding</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" data-target="41">0</div>
+        <div class="stat-label">% of code is AI-generated</div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <span>Scroll to explore</span>
+    <div class="arrow"></div>
+  </div>
+</section>
+
+<!-- ========== EVOLUTION TIMELINE ========== -->
+<section id="evolution">
+  <div class="section-inner fade-in">
+    <div class="section-tag">The Journey</div>
+    <h2 class="section-title">The Evolution of Coding</h2>
+    <p class="section-desc">Programming has always been about translating human intention into machine instruction. But the way we do it keeps changing.</p>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="era">1950s&ndash;1970s</div>
+        <h4>Punch Cards & Assembly</h4>
+        <p>Programmers wrote machine instructions by hand, punched holes in cards, and waited hours for results. Coding was an elite craft requiring deep hardware knowledge.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="era">1980s&ndash;2000s</div>
+        <h4>High-Level Languages & IDEs</h4>
+        <p>Languages like C, Java, and Python abstracted complexity away. IDEs provided autocomplete and debugging. More people could learn to code, but you still had to master syntax.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="era">2010s</div>
+        <h4>Stack Overflow & Open Source</h4>
+        <p>Copy-paste coding from forums became normal. Nobody writes everything from scratch anymore. The programmer becomes a curator and assembler of solutions.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="era">2021&ndash;2023</div>
+        <h4>AI Autocomplete: GitHub Copilot</h4>
+        <p>AI starts suggesting code in real-time. Programmers write comments, AI fills in functions. The line between writing and directing begins to blur.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="era">2024&ndash;Present</div>
+        <h4>Vibe Coding</h4>
+        <p>Users describe what they want in plain English. AI generates entire applications. The "programmer" becomes a director, tester, and curator. You don't need to understand the code &mdash; you just need to describe the vibe.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ========== BEFORE AI ========== -->
+<section id="before-ai">
+  <div class="section-inner fade-in">
+    <div class="section-tag">Chapter 1</div>
+    <h2 class="section-title">Before AI: The Old Way</h2>
+    <p class="section-desc">Traditional programming means wrestling with syntax, debugging cryptic errors, and spending hours on problems that feel like they should be simple.</p>
+
+    <div class="code-editor" id="old-code-editor">
+      <div class="editor-header">
+        <div class="editor-dot red"></div>
+        <div class="editor-dot yellow"></div>
+        <div class="editor-dot green"></div>
+        <span class="editor-title">weather_app.py</span>
+      </div>
+      <div class="editor-body" id="old-code-body">
+        <!-- Code will be typed in via JS -->
+      </div>
+    </div>
+
+    <div class="error-box" id="error-box" style="display:none;">
+      <strong>Traceback (most recent call last):</strong><br>
+      &nbsp;&nbsp;File "weather_app.py", line 14, in &lt;module&gt;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;data = response.json()<br>
+      <strong>requests.exceptions.ConnectionError:</strong> HTTPSConnectionPool(host='api.openweathermap.org'): Max retries exceeded<br><br>
+      <span style="color: var(--text-dim);">You spend 45 minutes debugging... it was a missing API key.</span>
+    </div>
+
+    <div class="frustration-meter">
+      <div class="label">Frustration Level</div>
+      <div class="meter-bar">
+        <div class="meter-fill" id="frustration-fill"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ========== VIBE CODING ========== -->
+<section id="vibe-coding">
+  <div class="section-inner fade-in">
+    <div class="section-tag">Chapter 2</div>
+    <h2 class="section-title">Vibe Coding: The New Way</h2>
+    <p class="section-desc">Now you just describe what you want. AI does the rest. Try it yourself &mdash; type a prompt or click a suggestion below.</p>
+
+    <div class="vibe-container">
+      <div class="prompt-input-box">
+        <span class="prompt-icon">&gt;_</span>
+        <input type="text" id="vibe-input" placeholder="Describe what you want to build..." autocomplete="off">
+        <button id="vibe-send-btn" onclick="handleVibePrompt()">Generate</button>
+      </div>
+
+      <div class="prompt-suggestions">
+        <button onclick="setVibePrompt('Make me a cute weather app with animations')">Make me a cute weather app</button>
+        <button onclick="setVibePrompt('Create a digital identity quiz')">Create a digital identity quiz</button>
+        <button onclick="setVibePrompt('Build a game about escaping algorithms')">Build a game about escaping algorithms</button>
+      </div>
+
+      <div class="vibe-output" id="vibe-output">
+        <div class="output-header">
+          <div class="left">
+            <div class="editor-dot red"></div>
+            <div class="editor-dot yellow"></div>
+            <div class="editor-dot green"></div>
+          </div>
+          <div class="output-tabs">
+            <button class="active" onclick="showTab('code')">Code</button>
+            <button onclick="showTab('preview')">Preview</button>
+          </div>
+        </div>
+        <div class="output-content" id="output-code">
+          <span style="color: var(--text-dim);">Your AI-generated code will appear here...</span>
+        </div>
+        <div class="output-preview" id="output-preview">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ========== PROMPT QUEST GAME ========== -->
+<section id="game">
+  <div class="section-inner fade-in">
+    <div class="section-tag">Chapter 3</div>
+    <h2 class="section-title">Prompt Quest: Escape the Bug</h2>
+    <p class="section-desc">You're a vibe coder. Your AI-generated app has bugs. Choose the right prompt to fix each one. The lesson: vibe coding still requires human judgment.</p>
+
+    <div class="game-container" id="game-container">
+      <div class="game-progress" id="game-progress"></div>
+      <div id="game-area"></div>
+      <div class="game-complete" id="game-complete">
+        <div class="score-circle" id="score-circle">0/5</div>
+        <h3 id="game-complete-title">Quest Complete!</h3>
+        <p id="game-complete-msg"></p>
+        <button class="game-restart-btn" onclick="restartGame()">Play Again</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ========== WHO IS THE CREATOR QUIZ ========== -->
+<section id="quiz">
+  <div class="section-inner fade-in">
+    <div class="section-tag">Chapter 4</div>
+    <h2 class="section-title">Who Is the Creator?</h2>
+    <p class="section-desc">When AI writes the code but you have the idea, who is the real author? Explore these questions &mdash; there are no wrong answers.</p>
+
+    <div class="quiz-cards" id="quiz-cards">
+      <!-- Generated by JS -->
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ========== REFLECTION ========== -->
+<section id="reflection">
+  <div class="section-inner fade-in">
+    <div class="section-tag">Chapter 5</div>
+    <h2 class="section-title">Reflection: What Does This Mean?</h2>
+    <p class="section-desc">Vibe coding is not just a new tool. It is a transformation in the relationship between humans and computational media.</p>
+
+    <div class="reflection-content">
+      <div class="reflection-block">
+        <h3>Empowerment</h3>
+        <p>Vibe coding lowers the barrier to software creation. People who could never write a line of code can now build websites, apps, and tools. A student with an idea can prototype it in minutes. This democratization of technology echoes the promise of every new medium &mdash; from the printing press to social media &mdash; that more people can become creators, not just consumers.</p>
+      </div>
+
+      <div class="reflection-block">
+        <h3>Dependency</h3>
+        <p>But empowerment comes with a shadow. When you don't understand the code AI writes, you depend on it entirely. If the AI hallucinates, introduces security vulnerabilities, or makes subtle errors, you may never know. The "creator" becomes someone who cannot maintain, modify, or even explain their own creation. Is that still creating?</p>
+      </div>
+
+      <div class="reflection-block">
+        <h3>Identity Shift</h3>
+        <p>The programmer's identity is changing. From someone who writes precise instructions, to someone who describes intentions and curates outputs. This shift mirrors broader changes in the age of AI: writers use ChatGPT, artists use Midjourney, musicians use Suno. In each case, the human role moves from maker to director. The question is not whether this is good or bad, but what kind of human agency it produces.</p>
+      </div>
+
+      <div class="reflection-block">
+        <h3>The Bigger Picture</h3>
+        <p>This website itself was built using vibe coding &mdash; through a conversation with an AI assistant. Every section, every animation, every line of code was generated through prompts. The fact that you are experiencing it right now proves both the power and the paradox: AI can create impressive things, but a human still had to decide what to create, how to frame it, and what it means. The human is not replaced. The human is transformed.</p>
+      </div>
+    </div>
+
+    <div style="margin-top: 2rem;">
+      <p style="color: var(--text-dim); font-size: 0.9rem; margin-bottom: 0.8rem;">Where do you think vibe coding falls on this spectrum? Drag the slider.</p>
+    </div>
+    <div class="spectrum">
+      <div class="spectrum-label">Dangerous<br>Dependency</div>
+      <div class="spectrum-bar" id="spectrum-bar">
+        <div class="spectrum-thumb" id="spectrum-thumb"></div>
+      </div>
+      <div class="spectrum-label">Creative<br>Empowerment</div>
+    </div>
+    <div class="spectrum-verdict" id="spectrum-verdict"></div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+  <p><strong>Vibe Coding the Human</strong> &mdash; An Interactive Exploration of AI, Creativity, and Identity</p>
+  <p style="margin-top: 0.5rem;">
+    Created for DIG/STS Course &middot; UC Davis &middot; 2026<br>
+    Built with vibe coding: human intention + AI generation
+  </p>
+</footer>
+
+
+<script>
+// ========================================
+// PARTICLES BACKGROUND
+// ========================================
+(function initParticles() {
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 50; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDuration = (8 + Math.random() * 12) + 's';
+    p.style.animationDelay = Math.random() * 10 + 's';
+    p.style.width = p.style.height = (1 + Math.random() * 3) + 'px';
+    container.appendChild(p);
+  }
+})();
+
+// ========================================
+// SCROLL ANIMATIONS
+// ========================================
+const fadeEls = document.querySelectorAll('.fade-in');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.15 });
+
+fadeEls.forEach(el => observer.observe(el));
+
+// Active nav link
+const sections = document.querySelectorAll('section');
+const navLinks = document.querySelectorAll('nav .nav-links a');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(sec => {
+    const top = sec.offsetTop - 100;
+    if (scrollY >= top) current = sec.id;
+  });
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === '#' + current) link.classList.add('active');
+  });
+});
+
+// ========================================
+// STAT COUNTER ANIMATION
+// ========================================
+const statNums = document.querySelectorAll('.stat-num');
+let statsAnimated = false;
+
+function animateStats() {
+  if (statsAnimated) return;
+  statsAnimated = true;
+  statNums.forEach(el => {
+    const target = parseInt(el.dataset.target);
+    let current = 0;
+    const step = target / 60;
+    const timer = setInterval(() => {
+      current += step;
+      if (current >= target) {
+        current = target;
+        clearInterval(timer);
+      }
+      el.textContent = Math.round(current);
+    }, 25);
+  });
+}
+
+const heroObserver = new IntersectionObserver((entries) => {
+  if (entries[0].isIntersecting) animateStats();
+}, { threshold: 0.5 });
+heroObserver.observe(document.getElementById('hero'));
+
+// ========================================
+// BEFORE AI - TYPING CODE ANIMATION
+// ========================================
+const oldCodeLines = [
+  { num: 1, html: '<span class="code-keyword">import</span> <span class="code-func">requests</span>' },
+  { num: 2, html: '<span class="code-keyword">import</span> <span class="code-func">json</span>' },
+  { num: 3, html: '' },
+  { num: 4, html: '<span class="code-comment"># TODO: figure out API authentication</span>' },
+  { num: 5, html: '<span class="code-var">API_KEY</span> = <span class="code-string">"..."</span>  <span class="code-comment"># where do I get this?</span>' },
+  { num: 6, html: '<span class="code-var">BASE_URL</span> = <span class="code-string">"https://api.openweathermap.org/data/2.5/weather"</span>' },
+  { num: 7, html: '' },
+  { num: 8, html: '<span class="code-keyword">def</span> <span class="code-func">get_weather</span>(<span class="code-var">city</span>):' },
+  { num: 9, html: '    <span class="code-var">params</span> = {<span class="code-string">"q"</span>: city, <span class="code-string">"appid"</span>: API_KEY}' },
+  { num: 10, html: '    <span class="code-var">response</span> = requests.<span class="code-func">get</span>(BASE_URL, <span class="code-var">params</span>=params)' },
+  { num: 11, html: '    <span class="code-keyword">if</span> response.<span class="code-var">status_code</span> != <span class="code-num">200</span>:' },
+  { num: 12, html: '        <span class="code-keyword">raise</span> <span class="code-func">Exception</span>(<span class="code-string">f"Error: {response.status_code}"</span>)' },
+  { num: 13, html: '    <span class="code-keyword">return</span> response.<span class="code-func">json</span>()' },
+  { num: 14, html: '' },
+  { num: 15, html: '<span class="code-comment"># 2 hours later... still debugging</span>' },
+  { num: 16, html: '<span class="code-var">data</span> = <span class="code-func">get_weather</span>(<span class="code-string">"Davis"</span>)' },
+  { num: 17, html: '<span class="code-error"># ConnectionError: Max retries exceeded</span>' },
+];
+
+let oldCodeTyped = false;
+
+const codeObserver = new IntersectionObserver((entries) => {
+  if (entries[0].isIntersecting && !oldCodeTyped) {
+    oldCodeTyped = true;
+    typeOldCode();
+  }
+}, { threshold: 0.3 });
+codeObserver.observe(document.getElementById('before-ai'));
+
+function typeOldCode() {
+  const body = document.getElementById('old-code-body');
+  body.innerHTML = '';
+  let i = 0;
+
+  function addLine() {
+    if (i >= oldCodeLines.length) {
+      // Show error after all code is typed
+      setTimeout(() => {
+        document.getElementById('error-box').style.display = 'block';
+        document.getElementById('frustration-fill').style.width = '85%';
+      }, 500);
+      return;
+    }
+    const line = oldCodeLines[i];
+    const div = document.createElement('div');
+    div.className = 'typing-line';
+    div.style.animationDelay = '0s';
+    div.innerHTML = `<span class="line-num">${line.num}</span>${line.html}`;
+    body.appendChild(div);
+    i++;
+    setTimeout(addLine, 120);
+  }
+  addLine();
+}
+
+// ========================================
+// VIBE CODING SIMULATOR
+// ========================================
+const vibeOutputs = {
+  'weather': {
+    code: [
+      '<span class="code-comment">// AI-generated weather app in 3 seconds</span>',
+      '<span class="code-keyword">import</span> { <span class="code-func">WeatherAPI</span> } <span class="code-keyword">from</span> <span class="code-string">\'./api\'</span>',
+      '',
+      '<span class="code-keyword">export default function</span> <span class="code-func">WeatherApp</span>() {',
+      '  <span class="code-keyword">const</span> [<span class="code-var">weather</span>, <span class="code-func">setWeather</span>] = <span class="code-func">useState</span>(<span class="code-keyword">null</span>)',
+      '  <span class="code-keyword">const</span> [<span class="code-var">city</span>, <span class="code-func">setCity</span>] = <span class="code-func">useState</span>(<span class="code-string">\'Davis\'</span>)',
+      '',
+      '  <span class="code-func">useEffect</span>(() => {',
+      '    <span class="code-func">fetchWeather</span>(city).<span class="code-func">then</span>(<span class="code-func">setWeather</span>)',
+      '  }, [city])',
+      '',
+      '  <span class="code-keyword">return</span> (',
+      '    &lt;<span class="code-func">Card</span> <span class="code-var">gradient</span>=<span class="code-string">"sunset"</span> <span class="code-var">animated</span>&gt;',
+      '      &lt;<span class="code-func">WeatherIcon</span> <span class="code-var">type</span>={weather?.icon} /&gt;',
+      '      &lt;<span class="code-func">Temperature</span> <span class="code-var">value</span>={weather?.temp} /&gt;',
+      '      &lt;<span class="code-func">CityName</span>&gt;{city}&lt;/<span class="code-func">CityName</span>&gt;',
+      '    &lt;/<span class="code-func">Card</span>&gt;',
+      '  )',
+      '}',
+    ],
+    preview: `
+      <div class="preview-weather">
+        <div class="icon">&#9925;</div>
+        <div class="temp">72&deg;F</div>
+        <div class="city">Davis, CA</div>
+        <div style="margin-top:1rem; font-size:0.85rem; opacity:0.8;">Partly Cloudy</div>
+      </div>
+    `
+  },
+  'quiz': {
+    code: [
+      '<span class="code-comment">// AI-generated identity quiz</span>',
+      '<span class="code-keyword">const</span> <span class="code-var">questions</span> = [',
+      '  {',
+      '    <span class="code-var">q</span>: <span class="code-string">"How much of your online self is the real you?"</span>,',
+      '    <span class="code-var">options</span>: [<span class="code-string">"100%"</span>, <span class="code-string">"About half"</span>, <span class="code-string">"A curated version"</span>]',
+      '  },',
+      '  {',
+      '    <span class="code-var">q</span>: <span class="code-string">"Do you change how you act for different platforms?"</span>,',
+      '    <span class="code-var">options</span>: [<span class="code-string">"Never"</span>, <span class="code-string">"Sometimes"</span>, <span class="code-string">"Always"</span>]',
+      '  }',
+      ']',
+      '',
+      '<span class="code-keyword">function</span> <span class="code-func">IdentityQuiz</span>() {',
+      '  <span class="code-keyword">return</span> <span class="code-func">questions</span>.<span class="code-func">map</span>(q => (',
+      '    &lt;<span class="code-func">QuizCard</span> <span class="code-var">question</span>={q} /&gt;',
+      '  ))',
+      '}',
+    ],
+    preview: `
+      <div class="preview-quiz">
+        <h3>Digital Identity Quiz</h3>
+        <p style="color: var(--text-dim); margin-bottom: 1rem; font-size: 0.9rem;">How much of your online self is the real you?</p>
+        <div class="quiz-opt">A. 100% &mdash; what you see is what you get</div>
+        <div class="quiz-opt">B. About half &mdash; I share selectively</div>
+        <div class="quiz-opt">C. A curated version &mdash; it's a performance</div>
+      </div>
+    `
+  },
+  'game': {
+    code: [
+      '<span class="code-comment">// AI-generated escape game</span>',
+      '<span class="code-keyword">const</span> <span class="code-var">GRID_SIZE</span> = <span class="code-num">5</span>',
+      '',
+      '<span class="code-keyword">class</span> <span class="code-func">AlgorithmEscape</span> {',
+      '  <span class="code-func">constructor</span>() {',
+      '    <span class="code-keyword">this</span>.<span class="code-var">player</span> = { <span class="code-var">x</span>: <span class="code-num">0</span>, <span class="code-var">y</span>: <span class="code-num">0</span> }',
+      '    <span class="code-keyword">this</span>.<span class="code-var">exit</span> = { <span class="code-var">x</span>: <span class="code-num">4</span>, <span class="code-var">y</span>: <span class="code-num">4</span> }',
+      '    <span class="code-keyword">this</span>.<span class="code-var">algorithms</span> = <span class="code-keyword">this</span>.<span class="code-func">spawnTraps</span>()',
+      '  }',
+      '',
+      '  <span class="code-func">move</span>(<span class="code-var">dir</span>) {',
+      '    <span class="code-comment">// Navigate through the algorithm maze</span>',
+      '    <span class="code-keyword">if</span> (<span class="code-keyword">this</span>.<span class="code-func">isTrapped</span>()) <span class="code-keyword">this</span>.<span class="code-func">showAd</span>()',
+      '    <span class="code-keyword">else</span> <span class="code-keyword">this</span>.<span class="code-func">updatePosition</span>(dir)',
+      '  }',
+      '}',
+    ],
+    preview: `
+      <div class="preview-game">
+        <p style="color: var(--accent-light); font-size: 0.9rem; margin-bottom: 0.5rem;">Escape the Algorithm</p>
+        <div class="game-grid">
+          <div class="game-cell player">&#128100;</div>
+          <div class="game-cell"></div>
+          <div class="game-cell wall">&#128065;</div>
+          <div class="game-cell"></div>
+          <div class="game-cell"></div>
+          <div class="game-cell"></div>
+          <div class="game-cell wall">&#128227;</div>
+          <div class="game-cell"></div>
+          <div class="game-cell wall">&#128065;</div>
+          <div class="game-cell"></div>
+          <div class="game-cell wall">&#128227;</div>
+          <div class="game-cell"></div>
+          <div class="game-cell"></div>
+          <div class="game-cell"></div>
+          <div class="game-cell wall">&#128065;</div>
+          <div class="game-cell"></div>
+          <div class="game-cell"></div>
+          <div class="game-cell wall">&#128227;</div>
+          <div class="game-cell"></div>
+          <div class="game-cell"></div>
+          <div class="game-cell"></div>
+          <div class="game-cell wall">&#128065;</div>
+          <div class="game-cell"></div>
+          <div class="game-cell"></div>
+          <div class="game-cell exit">&#127937;</div>
+        </div>
+        <p style="color: var(--text-dim); font-size: 0.8rem; margin-top: 0.5rem;">Use arrow keys to escape</p>
+      </div>
+    `
+  }
+};
+
+function setVibePrompt(text) {
+  document.getElementById('vibe-input').value = text;
+  handleVibePrompt();
+}
+
+function handleVibePrompt() {
+  const input = document.getElementById('vibe-input').value.toLowerCase();
+  let key = 'weather';
+  if (input.includes('quiz') || input.includes('identity')) key = 'quiz';
+  else if (input.includes('game') || input.includes('escape') || input.includes('algorithm')) key = 'game';
+
+  const data = vibeOutputs[key];
+  const codeEl = document.getElementById('output-code');
+  const previewEl = document.getElementById('output-preview');
+
+  // Reset
+  codeEl.innerHTML = '';
+  previewEl.innerHTML = '';
+  previewEl.style.display = 'none';
+  codeEl.style.display = 'block';
+
+  // Show code tab as active
+  document.querySelectorAll('.output-tabs button').forEach((b, i) => {
+    b.classList.toggle('active', i === 0);
+  });
+
+  // Type code lines
+  let i = 0;
+  function typeLine() {
+    if (i >= data.code.length) {
+      // Store preview
+      previewEl.innerHTML = data.preview;
+      return;
+    }
+    const div = document.createElement('div');
+    div.className = 'typing-line';
+    div.style.animationDelay = '0s';
+    div.innerHTML = data.code[i] || '&nbsp;';
+    codeEl.appendChild(div);
+    i++;
+    setTimeout(typeLine, 80);
+  }
+
+  // Show generating indicator
+  codeEl.innerHTML = '<span style="color: var(--accent-light);">Generating...</span> <span class="cursor-blink"></span>';
+  setTimeout(() => {
+    codeEl.innerHTML = '';
+    typeLine();
+  }, 800);
+}
+
+function showTab(tab) {
+  const codeEl = document.getElementById('output-code');
+  const previewEl = document.getElementById('output-preview');
+  const tabs = document.querySelectorAll('.output-tabs button');
+
+  if (tab === 'code') {
+    codeEl.style.display = 'block';
+    previewEl.style.display = 'none';
+    tabs[0].classList.add('active');
+    tabs[1].classList.remove('active');
+  } else {
+    codeEl.style.display = 'none';
+    previewEl.style.display = 'block';
+    tabs[1].classList.add('active');
+    tabs[0].classList.remove('active');
+  }
+}
+
+// Enter key on vibe input
+document.getElementById('vibe-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') handleVibePrompt();
+});
+
+// ========================================
+// PROMPT QUEST GAME
+// ========================================
+const gameData = [
+  {
+    bug: "Bug #1: Button Does Nothing",
+    context: "Users click the 'Submit' button but nothing happens. The AI-generated code looks fine at first glance.",
+    code: `<span class="code-keyword">const</span> <span class="code-var">btn</span> = document.<span class="code-func">querySelector</span>(<span class="code-string">'.submit'</span>)
+<span class="code-comment">// Event listener is missing...</span>`,
+    choices: [
+      { text: '"Make it better"', correct: false },
+      { text: '"Fix the button click handler — add an event listener for the submit button that calls the handleSubmit function"', correct: true },
+      { text: '"Rewrite the entire application from scratch"', correct: false }
+    ],
+    correctFeedback: "Specific prompts get specific fixes. You told the AI exactly what was wrong and what to do. This is the core skill of vibe coding: clear communication.",
+    wrongFeedback: "Vague prompts like 'make it better' give vague results. And rewriting everything wastes time and may introduce new bugs. The key to vibe coding is being specific about the problem."
+  },
+  {
+    bug: "Bug #2: Infinite Loading Spinner",
+    context: "The page shows a loading spinner forever. The data never appears. The API call seems correct.",
+    code: `<span class="code-keyword">async function</span> <span class="code-func">fetchData</span>() {
+  <span class="code-keyword">const</span> <span class="code-var">res</span> = <span class="code-keyword">await</span> <span class="code-func">fetch</span>(<span class="code-string">'/api/data'</span>)
+  <span class="code-comment">// response is never parsed...</span>
+  <span class="code-func">setLoading</span>(<span class="code-keyword">false</span>)
+}`,
+    choices: [
+      { text: '"The loading won\'t stop, please help"', correct: false },
+      { text: '"Remove the loading spinner"', correct: false },
+      { text: '"The fetch response is never parsed with .json() — add await res.json() and pass the result to setData before calling setLoading(false)"', correct: true }
+    ],
+    correctFeedback: "You identified the root cause: the response wasn't being parsed. Even in vibe coding, understanding what code does helps you write better prompts.",
+    wrongFeedback: "Removing the spinner hides the problem. Saying 'help' is too vague. The real skill is reading the code enough to identify what's actually wrong."
+  },
+  {
+    bug: "Bug #3: Passwords Stored in Plain Text",
+    context: "You notice the AI stored user passwords directly in the database without any encryption. This is a serious security vulnerability.",
+    code: `<span class="code-keyword">const</span> <span class="code-var">user</span> = {
+  <span class="code-var">email</span>: <span class="code-var">input</span>.<span class="code-var">email</span>,
+  <span class="code-var">password</span>: <span class="code-var">input</span>.<span class="code-var">password</span>  <span class="code-comment">// stored as plain text!</span>
+}
+db.<span class="code-func">insert</span>(<span class="code-string">'users'</span>, <span class="code-var">user</span>)`,
+    choices: [
+      { text: '"Hash the password using bcrypt before storing it in the database, and update the login function to compare hashed passwords"', correct: true },
+      { text: '"Make the password field hidden"', correct: false },
+      { text: '"It looks fine to me, just ship it"', correct: false }
+    ],
+    correctFeedback: "Security awareness is critical. AI often generates insecure code by default. A vibe coder needs to recognize these risks even without deep coding knowledge.",
+    wrongFeedback: "Hiding the field in the UI doesn't protect the database. And 'shipping it' with plain text passwords is a serious security risk. AI doesn't always think about security — you have to."
+  },
+  {
+    bug: "Bug #4: The AI Hallucinated a Library",
+    context: "The AI used a package called 'react-smooth-charts' but it doesn't exist. The app crashes on import.",
+    code: `<span class="code-keyword">import</span> { <span class="code-func">LineChart</span> } <span class="code-keyword">from</span> <span class="code-string">'react-smooth-charts'</span>
+<span class="code-comment">// Error: Module not found</span>
+<span class="code-comment">// This package does not exist on npm!</span>`,
+    choices: [
+      { text: '"Install react-smooth-charts"', correct: false },
+      { text: '"The library react-smooth-charts doesn\'t exist. Replace it with recharts or chart.js and update the import and component usage accordingly"', correct: true },
+      { text: '"Just remove the chart, we don\'t need it"', correct: false }
+    ],
+    correctFeedback: "AI models sometimes hallucinate packages that don't exist. A good vibe coder verifies that dependencies are real and suggests working alternatives.",
+    wrongFeedback: "You can't install a package that doesn't exist — that's the whole problem. And removing the feature avoids the issue. The right approach: identify the hallucination and suggest a real alternative."
+  },
+  {
+    bug: "Bug #5: The App Works But You Don't Understand It",
+    context: "The AI generated a complex algorithm for sorting user recommendations. It works perfectly, but you have no idea how. Your teammate asks you to explain it.",
+    code: `<span class="code-keyword">function</span> <span class="code-func">rankRecommendations</span>(<span class="code-var">users</span>, <span class="code-var">prefs</span>) {
+  <span class="code-keyword">return</span> <span class="code-var">users</span>.<span class="code-func">reduce</span>((<span class="code-var">acc</span>, <span class="code-var">u</span>) =>
+    <span class="code-var">acc</span>.<span class="code-func">concat</span>(<span class="code-var">prefs</span>.<span class="code-func">filter</span>(<span class="code-var">p</span> =>
+      <span class="code-var">p</span>.<span class="code-var">score</span> > <span class="code-var">u</span>.<span class="code-var">threshold</span>
+    ).<span class="code-func">sort</span>((<span class="code-var">a</span>,<span class="code-var">b</span>) => <span class="code-var">b</span>.<span class="code-var">weight</span> * <span class="code-var">b</span>.<span class="code-var">score</span> - <span class="code-var">a</span>.<span class="code-var">weight</span> * <span class="code-var">a</span>.<span class="code-var">score</span>)), [])
+}`,
+    choices: [
+      { text: '"It works, so who cares how it works"', correct: false },
+      { text: '"Add comments to each line explaining what this function does step by step, and suggest if there\'s a simpler way to write it"', correct: true },
+      { text: '"Delete it and write it myself"', correct: false }
+    ],
+    correctFeedback: "Understanding matters. Asking AI to explain its own code is one of the most powerful vibe coding techniques. You don't have to write the code, but you should understand what it does.",
+    wrongFeedback: "Ignoring comprehension creates fragile projects. And deleting working code to rewrite it yourself wastes time. The best approach: ask AI to explain and simplify. Understanding is not optional."
+  }
+];
+
+let currentLevel = 0;
+let score = 0;
+let gameActive = true;
+
+function renderGame() {
+  const area = document.getElementById('game-area');
+  const progress = document.getElementById('game-progress');
+
+  // Progress bar
+  progress.innerHTML = '';
+  for (let i = 0; i < gameData.length; i++) {
+    const step = document.createElement('div');
+    step.className = 'step';
+    if (i < currentLevel) step.classList.add('done');
+    if (i === currentLevel) step.classList.add('current');
+    progress.appendChild(step);
+  }
+
+  if (currentLevel >= gameData.length) {
+    area.style.display = 'none';
+    showGameComplete();
+    return;
+  }
+
+  const level = gameData[currentLevel];
+  area.style.display = 'block';
+  area.innerHTML = `
+    <div class="game-scenario">
+      <div class="bug-label">${level.bug}</div>
+      <div class="bug-desc">${level.context}</div>
+      <div class="game-code-preview">${level.code}</div>
+    </div>
+    <div class="game-choices">
+      ${level.choices.map((c, i) => `
+        <div class="game-choice" onclick="handleChoice(${i})" data-index="${i}">
+          <div class="choice-letter">${String.fromCharCode(65 + i)}</div>
+          <div class="choice-text">${c.text}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="game-feedback" id="game-feedback"></div>
+    <button class="game-next-btn" id="game-next-btn" onclick="nextLevel()">Next Challenge &rarr;</button>
+  `;
+}
+
+function handleChoice(index) {
+  if (!gameActive) return;
+  gameActive = false;
+
+  const level = gameData[currentLevel];
+  const isCorrect = level.choices[index].correct;
+  const choices = document.querySelectorAll('.game-choice');
+
+  choices.forEach((c, i) => {
+    if (level.choices[i].correct) c.classList.add('correct');
+    if (i === index && !isCorrect) c.classList.add('wrong');
+    if (i !== index && !level.choices[i].correct) c.classList.add('disabled');
+  });
+
+  if (isCorrect) score++;
+
+  const feedback = document.getElementById('game-feedback');
+  feedback.className = `game-feedback show ${isCorrect ? 'correct-fb' : 'wrong-fb'}`;
+  feedback.innerHTML = `
+    <div class="fb-title">${isCorrect ? 'Correct!' : 'Not quite...'}</div>
+    <div>${isCorrect ? level.correctFeedback : level.wrongFeedback}</div>
+  `;
+
+  document.getElementById('game-next-btn').classList.add('show');
+}
+
+function nextLevel() {
+  currentLevel++;
+  gameActive = true;
+  renderGame();
+}
+
+function showGameComplete() {
+  const complete = document.getElementById('game-complete');
+  complete.classList.add('show');
+  document.getElementById('score-circle').textContent = `${score}/${gameData.length}`;
+
+  let msg = '';
+  if (score === gameData.length) {
+    document.getElementById('game-complete-title').textContent = 'Perfect Score!';
+    msg = 'You understand the key insight: vibe coding is not about blindly accepting AI output. It\'s about asking the right questions, understanding the answers, and making informed decisions. The human is not replaced — the human is essential.';
+  } else if (score >= 3) {
+    document.getElementById('game-complete-title').textContent = 'Great Job!';
+    msg = 'You\'re getting the hang of vibe coding. The key lesson: the quality of your prompts determines the quality of the output. Vibe coding requires judgment, not just vibes.';
+  } else {
+    document.getElementById('game-complete-title').textContent = 'Keep Learning!';
+    msg = 'Vibe coding is harder than it looks. It\'s not just about telling AI what to do — it\'s about understanding problems, communicating clearly, and thinking critically about the output.';
+  }
+  document.getElementById('game-complete-msg').textContent = msg;
+}
+
+function restartGame() {
+  currentLevel = 0;
+  score = 0;
+  gameActive = true;
+  document.getElementById('game-complete').classList.remove('show');
+  renderGame();
+}
+
+renderGame();
+
+// ========================================
+// WHO IS THE CREATOR QUIZ
+// ========================================
+const quizQuestions = [
+  {
+    q: "If you describe an idea and AI writes all the code, who is the author?",
+    options: ["The human — the idea is what matters", "The AI — it wrote the actual code", "Both — it's a collaboration", "Neither — authorship doesn't apply here"],
+    analysis: [
+      "This echoes the Romantic view of authorship: the genius is in the concept. Film directors don't operate cameras, but we call them authors. Perhaps the 'prompt engineer' is the new auteur.",
+      "If authorship means producing the artifact, then the AI is the author. But AI has no intention, no purpose, no understanding. It generates statistically probable text. Can something without consciousness be an author?",
+      "Co-authorship recognizes that creation is increasingly hybrid. But traditional copyright law struggles with this — it requires a human author. The legal and philosophical frameworks haven't caught up.",
+      "Post-structuralist thinkers like Roland Barthes argued the 'author is dead' — meaning comes from the reader, not the writer. Perhaps in the age of AI, we should focus on what's created, not who created it."
+    ]
+  },
+  {
+    q: "A student builds a complete app using only AI prompts, with no coding knowledge. Are they a 'real' programmer?",
+    options: ["Yes — the result is what counts", "No — they can't maintain or understand it", "They're something new: a 'prompt engineer'", "The question itself is outdated"],
+    analysis: [
+      "Pragmatism says: if it works, it works. Early photographers were told they weren't 'real' artists because a machine made the image. History tends to side with the new tool users.",
+      "This view values deep understanding over output. A photographer who can't develop film differently than one who can. But does every user need to be an expert? We drive cars without understanding engines.",
+      "Perhaps we need new categories instead of forcing AI users into the old 'programmer' box. 'Prompt engineer' or 'AI director' describes a genuinely new skill set — part communication, part taste, part quality control.",
+      "The concept of 'programmer' has always evolved: from hardware engineers, to assembly writers, to web developers. Each generation was told they weren't 'real' programmers by the previous one."
+    ]
+  },
+  {
+    q: "Is vibe coding empowerment or dependency?",
+    options: ["Empowerment — more people can create", "Dependency — we'll lose the ability to code", "It depends on how you use it", "It's both, and that's the point"],
+    analysis: [
+      "The empowerment argument is compelling. Millions of people have ideas but no way to build them. If AI removes that barrier, it's democratization. The printing press didn't make everyone a writer, but it let many more people share ideas.",
+      "The dependency concern is real. If the AI goes down, gets expensive, or produces biased output, users who never learned the fundamentals have no fallback. We've seen this with GPS killing navigation skills and calculators changing math education.",
+      "Individual choices matter: using AI while also learning fundamentals is different from pure dependency. But institutions, economics, and time pressure may push people toward the path of least resistance.",
+      "This tension — empowerment AND dependency — is not new. Every powerful tool creates both. Cars gave us freedom and took away walkable cities. Social media gave us connection and took away privacy. The answer isn't to choose one side, but to be honest about both."
+    ]
+  }
+];
+
+function renderQuiz() {
+  const container = document.getElementById('quiz-cards');
+  container.innerHTML = quizQuestions.map((q, qi) => `
+    <div class="quiz-card">
+      <div class="quiz-q">${q.q}</div>
+      <div class="quiz-options">
+        ${q.options.map((opt, oi) => `
+          <div class="quiz-option" onclick="selectQuizOption(${qi}, ${oi})">${opt}</div>
+        `).join('')}
+      </div>
+      <div class="quiz-result" id="quiz-result-${qi}"></div>
+    </div>
+  `).join('');
+}
+
+function selectQuizOption(qi, oi) {
+  const card = document.querySelectorAll('.quiz-card')[qi];
+  const options = card.querySelectorAll('.quiz-option');
+  options.forEach((o, i) => {
+    o.classList.toggle('selected', i === oi);
+  });
+
+  const result = document.getElementById(`quiz-result-${qi}`);
+  result.className = 'quiz-result show';
+  result.innerHTML = `<strong>One perspective:</strong><br>${quizQuestions[qi].analysis[oi]}`;
+}
+
+renderQuiz();
+
+// ========================================
+// SPECTRUM SLIDER
+// ========================================
+(function initSpectrum() {
+  const bar = document.getElementById('spectrum-bar');
+  const thumb = document.getElementById('spectrum-thumb');
+  const verdict = document.getElementById('spectrum-verdict');
+  let dragging = false;
+
+  function updatePosition(clientX) {
+    const rect = bar.getBoundingClientRect();
+    let pct = (clientX - rect.left) / rect.width;
+    pct = Math.max(0, Math.min(1, pct));
+    thumb.style.left = (pct * 100) + '%';
+
+    if (pct < 0.2) verdict.textContent = "You see vibe coding as mostly dangerous — a path to dependency and loss of understanding.";
+    else if (pct < 0.4) verdict.textContent = "You lean cautious — the risks of vibe coding worry you more than the benefits excite you.";
+    else if (pct < 0.6) verdict.textContent = "You see both sides — vibe coding is powerful but complicated. That might be the most honest answer.";
+    else if (pct < 0.8) verdict.textContent = "You lean optimistic — the democratizing potential of vibe coding outweighs its risks.";
+    else verdict.textContent = "You see vibe coding as pure empowerment — more creators, more access, more innovation.";
+  }
+
+  thumb.addEventListener('mousedown', () => dragging = true);
+  window.addEventListener('mouseup', () => dragging = false);
+  window.addEventListener('mousemove', (e) => { if (dragging) updatePosition(e.clientX); });
+
+  thumb.addEventListener('touchstart', () => dragging = true);
+  window.addEventListener('touchend', () => dragging = false);
+  window.addEventListener('touchmove', (e) => { if (dragging) updatePosition(e.touches[0].clientX); });
+
+  bar.addEventListener('click', (e) => updatePosition(e.clientX));
+})();
+
+</script>
+
+</body>
+</html>
